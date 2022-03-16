@@ -64,6 +64,16 @@ int main()
             wczytaj_liczby(file, nazwa_pliku, 1000, num_1k);
             wczytaj_liczby(file, nazwa_pliku, 2000, num_2k);
             wczytaj_liczby(file, nazwa_pliku, 5000, num_5k);
+            wczytaj_liczby(file, nazwa_pliku, 10000, num_10k);
+            wczytaj_liczby(file, nazwa_pliku, 20000, num_20k);
+            wczytaj_liczby(file, nazwa_pliku, 50000, num_50k);
+            wczytaj_liczby(file, nazwa_pliku, 100000, num_100k);
+            wczytaj_liczby(file, nazwa_pliku, 200000, num_200k);
+            wczytaj_liczby(file, nazwa_pliku, 300000, num_300k);
+            wczytaj_liczby(file, nazwa_pliku, 500000, num_500k);
+            wczytaj_liczby(file, nazwa_pliku, 700000, num_700k);
+            wczytaj_liczby(file, nazwa_pliku, 900000, num_900k);
+            wczytaj_liczby(file, nazwa_pliku, 1000000, num_1M);
             break;
         }
         case 3: // sortowanie tablic

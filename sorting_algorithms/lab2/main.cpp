@@ -1,6 +1,7 @@
 ﻿#include<iostream>
 #include<fstream>
 #include<typeinfo>
+#include<chrono>
 
 
 using namespace std;
@@ -8,9 +9,14 @@ using namespace std;
 // sekcja funkcyjna
 void wczytaj_liczby(string nazwa_pliku, int ilosc_wczytywanych_liczb, int* zalokowana_tablica);
 void pokaz_liczby(int ilosc_wczytanych_elementow_tablicy, int* tablica);
+
 void bubble_sort(int ile_elementow_w_tablicy, int* tablica);
 void quick_sort(int lewa_strona, int prawa_strona,  int* tablica);
 void insertion_sort(int wielkosc_tablicy, int* tablica);
+
+void zapisz_pomiary(string nazwa_pliku, int ilosc_liczb, int tabela_pomiarow[10]);
+
+
 
 int main()
 {
@@ -80,8 +86,48 @@ int main()
         case 2:
         {
             // tablica z kolejną licznością elementów tablicy
-            int pomiary[17]={10, 50, 100, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 300000, 500000, 700000, 900000, 1000000};
+            long int pomiary[17]={10, 50, 100, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 300000, 500000, 700000, 900000, 1000000};
             
+            // inicjacja pliku przechowującego pomiary 
+            string nazwa_pliku="short_pomiary.csv";
+            ofstream file(nazwa_pliku);
+            if (file.good()==true)
+            {
+                file<<"ilosc liczb";
+                for(int i=0;i<10;i++)
+                {
+                    file<<','<<i+1;
+                }
+                file<<endl;
+            }
+            else
+            {
+                exit(-1);
+            }
+            file.close();
+
+            // uruchomienie petli pomiarow
+            int czasy[10];
+            for(int s=3;s<7;s++)   //8,12
+            {
+                cout<<"Rozpoczeto pomiary czasu ilosci "<<pomiary[s]<<" liczb."<<endl;
+                for (int i = 0; i < 10; i++)    //10
+                {
+                int* point=new int[pomiary[s]];
+                wczytaj_liczby("liczby.txt", pomiary[s], point);
+                // tutaj start time
+                czasy[i]=i;
+
+                bubble_sort(pomiary[s], point);
+
+                // tutaj koniec czasu
+
+                delete[] point;
+                    
+                }
+                zapisz_pomiary(nazwa_pliku, pomiary[s], czasy);
+            }
+
             break;
         }
         case 3:
@@ -135,6 +181,7 @@ void pokaz_liczby(int ilosc_wczytanych_elementow_tablicy, int* tablica)
     cout<<"------------------------\tKONIEC\t------------------------"<<endl;
 }
 
+// algorytmy sortowania
 void bubble_sort(int ile_elementow_w_tablicy, int* tablica)
 {
     for (int i = 0; i < ile_elementow_w_tablicy; i++)
@@ -193,4 +240,24 @@ void insertion_sort(int wielkosc_tablicy, int* tablica)
        
         tablica[ j + 1 ] = temp;
     }
+}
+
+void zapisz_pomiary(string nazwa_pliku, int ilosc_liczb, int tabela_pomiarow[10])
+{
+    fstream plik;
+    plik.open(nazwa_pliku, ios::out|ios::app);
+    if(plik.good()==true)
+    {
+        plik<<ilosc_liczb;
+        for(int i=0;i<10;i++)
+        {
+            plik<<','<<tabela_pomiarow[i];
+        }
+        plik<<endl;
+    }
+    else
+    {
+        cout<<"Nie udalo sie zapisac danych"<<endl;
+    }
+    plik.close();
 }
