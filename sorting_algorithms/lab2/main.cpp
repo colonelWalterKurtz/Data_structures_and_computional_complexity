@@ -9,6 +9,7 @@ using namespace std;
 void wczytaj_liczby(string nazwa_pliku, int ilosc_wczytywanych_liczb, int* zalokowana_tablica);
 void pokaz_liczby(int ilosc_wczytanych_elementow_tablicy, int* tablica);
 void bubble_sort(int ile_elementow_w_tablicy, int* tablica);
+void quick_sort(int lewa_strona, int prawa_strona,  int* tablica);
 
 int main()
 {
@@ -48,10 +49,11 @@ int main()
             case 1:
             {
                 bubble_sort(ilosc, tablica);
-                cout<<"*********************\tPodglad\t*********************"<<endl;
-                pokaz_liczby(ilosc, tablica);
-                cout<<"Wpisz cokolwiek, aby przejsc dalej:\t";
-                cin>>stop;
+                break;
+            }
+            case 2:
+            {
+                quick_sort(0, ilosc, tablica);
                 break;
             }
             default:
@@ -59,6 +61,11 @@ int main()
                 exit(-1);
             }
             }
+            cout<<"*********************\tPodglad\t*********************"<<endl;
+                pokaz_liczby(ilosc, tablica);
+                cout<<"Wpisz cokolwiek, aby przejsc dalej:\t";
+                cin>>stop;
+
             // usuniecie zalokowanej pamieci
             delete[] tablica; 
 
@@ -132,7 +139,30 @@ void bubble_sort(int ile_elementow_w_tablicy, int* tablica)
     }
 }
 
-void quick_sort(int ile_elementow_w_tablicy, int* tablica)
+void quick_sort(int lewa_strona, int prawa_strona,  int* tablica)
 {
-
+    int i = lewa_strona;
+    int j = prawa_strona;
+    int x = tablica[( lewa_strona + prawa_strona ) / 2 ];
+    do
+    {
+        while( tablica[ i ] < x )
+             i++;
+       
+        while( tablica[ j ] > x )
+             j--;
+       
+        if( i <= j )
+        {
+            swap( tablica[ i ], tablica[ j ] );
+           
+            i++;
+            j--;
+        }
+    } while( i <= j );
+   
+    if( lewa_strona < j ) quick_sort(lewa_strona, j, tablica);
+   
+    if( prawa_strona > i ) quick_sort(i, prawa_strona, tablica);
+   
 }
