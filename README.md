@@ -8,3 +8,6 @@ C++ was chosen as the programming language in which the all presented algorithms
     2. execution time is an avereage or a median of those attempts
     3. if a result significantly different from the others was found during the test, it is ignored
     4. there is provided an option to save sorted data, to a comparison
+
+### compilation
+*$ g++ main.cpp*
