@@ -10,6 +10,7 @@ void wczytaj_liczby(string nazwa_pliku, int ilosc_wczytywanych_liczb, int* zalok
 void pokaz_liczby(int ilosc_wczytanych_elementow_tablicy, int* tablica);
 void bubble_sort(int ile_elementow_w_tablicy, int* tablica);
 void quick_sort(int lewa_strona, int prawa_strona,  int* tablica);
+void insertion_sort(int wielkosc_tablicy, int* tablica);
 
 int main()
 {
@@ -42,7 +43,7 @@ int main()
             cout<<"Wybierz sposob sortowania:"<<endl;
             cout<<"1. Bubble sort"<<endl;
             cout<<"2. Quick sort"<<endl;
-            cout<<"3. Merge sort"<<endl;
+            cout<<"3. Inseretion sort"<<endl;
             cin>>jakie_sortowanie;
             switch (jakie_sortowanie)
             {
@@ -54,6 +55,11 @@ int main()
             case 2:
             {
                 quick_sort(0, ilosc, tablica);
+                break;
+            }
+            case 3:
+            {
+                insertion_sort(ilosc, tablica);
                 break;
             }
             default:
@@ -69,6 +75,13 @@ int main()
             // usuniecie zalokowanej pamieci
             delete[] tablica; 
 
+            break;
+        }
+        case 2:
+        {
+            // tablica z kolejną licznością elementów tablicy
+            int pomiary[17]={10, 50, 100, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 300000, 500000, 700000, 900000, 1000000};
+            
             break;
         }
         case 3:
@@ -165,4 +178,19 @@ void quick_sort(int lewa_strona, int prawa_strona,  int* tablica)
    
     if( prawa_strona > i ) quick_sort(i, prawa_strona, tablica);
    
+}
+
+void insertion_sort(int wielkosc_tablicy, int* tablica)
+{
+    int temp, j;
+   
+    for( int i = 1; i < wielkosc_tablicy; i++ )
+    {
+        temp = tablica[ i ];
+       
+        for( j = i - 1; j >= 0 && tablica[ j ] > temp; j-- )
+             tablica[ j + 1 ] = tablica[ j ];
+       
+        tablica[ j + 1 ] = temp;
+    }
 }
