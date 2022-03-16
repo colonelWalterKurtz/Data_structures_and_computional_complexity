@@ -27,8 +27,16 @@ int main()
     int* num_1k = new int[1000];
     int* num_2k = new int[2000];
     int* num_5k = new int[5000];
-    int* num_10k, num_20k, num_50k, num_100k, num_200k, num_300k, num_500k, num_700k, num_900k, num_1M;
-
+    int* num_10k = new int[10000];
+    int* num_20k = new int[20000]; 
+    int* num_50k = new int[50000];
+    int* num_100k= new int[100000];
+    int*  num_200k = new int[200000];
+    int*  num_300k = new int[300000]; 
+    int* num_500k = new int[500000];
+    int* num_700k = new int[700000];
+    int*  num_900k = new int[900000];
+    int* num_1M = new int[1000000];
 
     int opcja = 0;
     int stop = 0;
@@ -105,7 +113,7 @@ int main()
 
 
     }
-    delete[] num_10, num_50, num_100, num_1k, num_2k, num_5k;
+    delete[] num_10, num_50, num_100, num_1k, num_2k, num_5k, num_10k, num_20k, num_50k, num_100k, num_200k, num_300k, num_500k, num_700k, num_900k, num_1M;
     return 0;
 }
 
