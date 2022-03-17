@@ -21,12 +21,14 @@ void zapisz_liczby(string nazwa_pliku, int ilosc_liczb, int* tablica);
 
 int main()
 {
+    // inicjalizacja
+
     bool working=true;
     while (working)
     {
         system("CLS");
         cout<<"##########################\tMENU\t##########################"<<endl;
-        cout<<"1. Wczytaj liczby i posortuj"<<endl;
+        cout<<"1. Sortowanie"<<endl;
         cout<<"2. Generuj wyniki"<<endl;
         cout<<"3. Koniec programu"<<endl;
         int wybor;
@@ -43,7 +45,7 @@ int main()
             // utworzenie dynamicznej tablicy przechowujacej wczytane liczby
             int* tablica=new int[ilosc];
             wczytaj_liczby("liczby.txt", ilosc, tablica);
-            pokaz_liczby(ilosc, tablica);
+            //pokaz_liczby(ilosc, tablica);
 
             // wybor sortowania
             int jakie_sortowanie=0;
@@ -75,7 +77,7 @@ int main()
             }
             }
             cout<<"*********************\tPodglad\t*********************"<<endl;
-                pokaz_liczby(ilosc, tablica);
+                //pokaz_liczby(ilosc, tablica);
                 zapisz_liczby("posortowane.txt", ilosc, tablica);
                 cout<<"Wpisz cokolwiek, aby przejsc dalej:\t";
                 cin>>stop;
@@ -110,7 +112,7 @@ int main()
 
             // uruchomienie petli pomiarow
             int czasy[10];
-            for(int s=0;s<8;s++)   //8,12
+            for(int s=0;s<17;s++)   //8,12
             {
                 cout<<"Rozpoczeto pomiary czasu ilosci "<<pomiary[s]<<" liczb."<<endl;
                 for (int i = 0; i < 10; i++)    //10
@@ -120,8 +122,9 @@ int main()
                 // tutaj start time
                 std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-                bubble_sort(pomiary[s], point);
-
+                //bubble_sort(pomiary[s], point);
+                quick_sort(0, pomiary[s], point);   
+                //insertion_sort(pomiary[s],point);
                 // tutaj koniec czasu
                 std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
                 //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
