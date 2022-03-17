@@ -15,6 +15,7 @@ void quick_sort(int lewa_strona, int prawa_strona,  int* tablica);
 void insertion_sort(int wielkosc_tablicy, int* tablica);
 
 void zapisz_pomiary(string nazwa_pliku, int ilosc_liczb, int tabela_pomiarow[10]);
+void zapisz_liczby(string nazwa_pliku, int ilosc_liczb, int* tablica);
 
 
 
@@ -75,6 +76,7 @@ int main()
             }
             cout<<"*********************\tPodglad\t*********************"<<endl;
                 pokaz_liczby(ilosc, tablica);
+                zapisz_liczby("posortowane.txt", ilosc, tablica);
                 cout<<"Wpisz cokolwiek, aby przejsc dalej:\t";
                 cin>>stop;
 
@@ -108,7 +110,7 @@ int main()
 
             // uruchomienie petli pomiarow
             int czasy[10];
-            for(int s=3;s<7;s++)   //8,12
+            for(int s=0;s<8;s++)   //8,12
             {
                 cout<<"Rozpoczeto pomiary czasu ilosci "<<pomiary[s]<<" liczb."<<endl;
                 for (int i = 0; i < 10; i++)    //10
@@ -116,18 +118,26 @@ int main()
                 int* point=new int[pomiary[s]];
                 wczytaj_liczby("liczby.txt", pomiary[s], point);
                 // tutaj start time
-                czasy[i]=i;
+                std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
                 bubble_sort(pomiary[s], point);
 
                 // tutaj koniec czasu
+                std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+                //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
+                
+                int time_dif=chrono::duration_cast<chrono::microseconds>(end-begin).count();
+                
+                // wpisanie czasu do tablicy
+                czasy[i]=time_dif;
 
                 delete[] point;
                     
                 }
                 zapisz_pomiary(nazwa_pliku, pomiary[s], czasy);
             }
-
+            cout<<"Wpisz cokolwiek, aby przejsc dalej: ";
+            cin>>stop;
             break;
         }
         case 3:
@@ -261,3 +271,21 @@ void zapisz_pomiary(string nazwa_pliku, int ilosc_liczb, int tabela_pomiarow[10]
     }
     plik.close();
 }
+
+void zapisz_liczby(string nazwa_pliku, int ilosc_liczb, int* tablica)
+{
+    ofstream file(nazwa_pliku);
+    if (file.good()==true)
+    {
+        for (int i = 0; i < ilosc_liczb; i++)
+        {
+            file<<tablica[i]<<", ";
+        }
+    }
+    else
+    {
+        exit(-1);
+    }
+    file.close();  
+}
+
