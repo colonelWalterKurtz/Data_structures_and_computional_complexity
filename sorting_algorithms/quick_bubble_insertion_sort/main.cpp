@@ -21,7 +21,6 @@ void sprawdzenie_tablicy(int* wsk, int ilosc_wczytywanych_liczb);
 void zapisz_posortowane(int* wsk, int ile_elementow_w_tablicy, string nazwa_pliku);
 void utworzenie_pliku_z_pomiarami(string nazwa_pliku_z_pomiarami, int liczba_prob);
 long double policz_srednia(unsigned long long int* wsk, int ilosc_elementow_w_tablicy);
-long double znajdz_mediane(unsigned long long int* wsk, int ilosc_elementow_w_tablicy);
 void zapisanie_pomiarow_instancji(string nazwa_pliku_z_pomiarami, int liczba_instancji, unsigned long long int* wsk_na_czas_pomiaru, int liczba_prob, long double srednia);
 
 // sortowania:
