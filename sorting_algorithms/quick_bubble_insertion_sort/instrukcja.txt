@@ -1,0 +1,24 @@
+STRUKTURY DANYCH I ZŁOŻONOŚĆ OBLICZENIOWA - LABORATORIUM - lab 2 - Sortowanie 1
+
+* W pliku inicjalizacja.ini zawarte są kolejno w liniach:
+    1.  nazwa pliku z danymi (plik wejściowy)
+
+    2.  siedemnaście przykładowych wielkości instancji (musi być podane dokładnie siedemnaście, odzielonych od siebie spacjami)
+        + zapis wielkości instancji: instancja1 instancja2 instancja 3 ... instancja17
+
+    3.  liczba prób pomiaru czasu wykonania sortowania dla każdej instancji
+    
+    4.  liczba określająca jaki typ sortowania ma zostać wykonany na wczytanych instancjach
+        1 - Quick sort
+        2 - Bubble sort
+        3 - Insertion sort
+
+    5.  sama nazwa pliku wyjściowego z posortowanymi liczbami
+        + ostatnia siedemnasta instancja definiuje ile liczb posotowanych zostanie zwróconych do pliku
+    
+    6.  sama nazwa pliku wyjściowego zawierająca czas wykonania sortowania dla poszczególnych instancji
+        + w zależności od wybranego sortowania plik finalny będzie posiadać dopisek *_wybrane_sortowanie.csv
+
+
+* 
+    
