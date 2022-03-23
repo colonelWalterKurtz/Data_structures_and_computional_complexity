@@ -1,6 +1,0 @@
-wykres na x ilość instancji
-wykres na y ilość czasu
-wykres umieścić w kropkach pomiary
-wykres dodać zamiast połączeń kropek wstawić linię trendu
-wykres obok wykresu dodać wykres oszacowania
-wykres zbiorczy, na którym wszystkie wspólne wykresy       
