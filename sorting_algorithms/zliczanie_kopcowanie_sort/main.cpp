@@ -13,14 +13,6 @@ int jakie_sortowanie;
 string nazwa_pliku_wyjciowego;
 string nazwa_pliku_z_czasami;
 
-// zmienne globalne
-string nazwa_pliku_wejsciowego;
-int instancje[17];
-int liczba_pomiarow;
-int jakie_sortowanie;
-string nazwa_pliku_wyjciowego;
-string nazwa_pliku_z_czasami;
-
 // sekcja funkcyjna
 void inicjalizacja(string nazwa_ini);
 void sprawdzenie_inicjalizacji();
@@ -32,8 +24,9 @@ long double policz_srednia(unsigned long long int* wsk, int ilosc_elementow_w_ta
 void zapisanie_pomiarow_instancji(string nazwa_pliku_z_pomiarami, int liczba_instancji, unsigned long long int* wsk_na_czas_pomiaru, int liczba_prob, long double srednia);
 
 // sekcja sortowań
-void sort_przez_zliczanie();
-void sort_przez_kopcenie();
+
+void kopcenie(int* arr, int n, int i);
+void sort_przez_kopcenie(int* arr, int n);
 
 
 int main()
@@ -62,11 +55,11 @@ int main()
             switch (jakie_sortowanie)
             {
             case 1: // przez zliczanie
-                quick_sort(tab, 0, instancje[i]);
+                sort_przez_zliczanie(tab, instancje[i]);
                 break;
             
             case 2: // przez kopcenie
-                bubble_sort(tab, instancje[i]);
+                sort_przez_kopcenie(tab, instancje[i]);
                 break;
 
             default:
@@ -303,12 +296,45 @@ void zapisanie_pomiarow_instancji(string nazwa_pliku_z_pomiarami, int liczba_ins
 }
 
 // sekcja sortowań
-void sort_przez_zliczanie()
-{
 
+
+
+void kopcenie(int* arr, int n, int i)
+{
+    int largest = i; // Initialize largest as root
+    int l = 2 * i + 1; // left = 2*i + 1
+    int r = 2 * i + 2; // right = 2*i + 2
+ 
+    // If left child is larger than root
+    if (l < n && arr[l] > arr[largest])
+        largest = l;
+ 
+    // If right child is larger than largest so far
+    if (r < n && arr[r] > arr[largest])
+        largest = r;
+ 
+    // If largest is not root
+    if (largest != i) {
+        swap(arr[i], arr[largest]);
+ 
+        // Recursively heapify the affected sub-tree
+        kopcenie(arr, n, largest);
+    }
 }
-
-void sort_przez_kopcenie()
+ 
+// main function to do heap sort
+void sort_przez_kopcenie(int* arr, int n)
 {
-
+    // Build heap (rearrange array)
+    for (int i = n / 2 - 1; i >= 0; i--)
+        kopcenie(arr, n, i);
+ 
+    // One by one extract an element from heap
+    for (int i = n - 1; i > 0; i--) {
+        // Move current root to end
+        swap(arr[0], arr[i]);
+ 
+        // call max heapify on the reduced heap
+        kopcenie(arr, i, 0);
+    }
 }
