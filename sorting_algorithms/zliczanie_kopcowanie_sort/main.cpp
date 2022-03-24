@@ -24,7 +24,8 @@ long double policz_srednia(unsigned long long int* wsk, int ilosc_elementow_w_ta
 void zapisanie_pomiarow_instancji(string nazwa_pliku_z_pomiarami, int liczba_instancji, unsigned long long int* wsk_na_czas_pomiaru, int liczba_prob, long double srednia);
 
 // sekcja sortowań
-
+int* findMinAndMax(int* arr, int n);
+void counting_sort(int* tab, int n, int yMin, int yMax);
 void kopcenie(int* arr, int n, int i);
 void sort_przez_kopcenie(int* arr, int n);
 
@@ -55,7 +56,7 @@ int main()
             switch (jakie_sortowanie)
             {
             case 1: // przez zliczanie
-                sort_przez_zliczanie(tab, instancje[i]);
+                counting_sort(tab, instancje[i], findMinAndMax(tab, instancje[i])[0], findMinAndMax(tab, instancje[i])[1]);
                 break;
             
             case 2: // przez kopcenie
@@ -229,11 +230,11 @@ void utworzenie_pliku_z_pomiarami(string nazwa_pliku_z_pomiarami, int liczba_pro
     if(plik.good()==true)
     {
         // utworzenie tabeli
-        plik<<"liczba instancji"<<",";
+        plik<<"liczba instancji"<<";";
         // kolejne
         for (int i = 0; i < liczba_prob; i++)
         {
-            plik<<i+1<<" pomiar,";
+            plik<<i+1<<" pomiar;";
         }
         
         plik<<"srednia"<<endl;
@@ -280,10 +281,10 @@ void zapisanie_pomiarow_instancji(string nazwa_pliku_z_pomiarami, int liczba_ins
     plik.open(nazwa_pliku_z_pomiarami, ios::out|ios::app);
     if(plik.good()==true)
     {
-        plik<<liczba_instancji<<",";
+        plik<<liczba_instancji<<";";
         for (int i = 0; i < liczba_prob; i++)
         {
-            plik<<wsk_na_czas_pomiaru[i]<<",";
+            plik<<wsk_na_czas_pomiaru[i]<<";";
         }
         plik<<srednia<<endl;
     }
@@ -296,8 +297,32 @@ void zapisanie_pomiarow_instancji(string nazwa_pliku_z_pomiarami, int liczba_ins
 }
 
 // sekcja sortowań
-
-
+int getMax(int array[], int size) {
+   int max = array[1];
+   for(int i = 2; i<=size; i++) {
+      if(array[i] > max)
+         max = array[i];
+   }
+   return max; //the max element from the array
+}
+void countSort(int *array, int size) {
+   int output[size+1];
+   int max = getMax(array, size);
+   int count[max+1];     //create count array (max+1 number of elements)
+   for(int i = 0; i<=max; i++)
+      count[i] = 0;     //initialize count array to all zero
+   for(int i = 1; i <=size; i++)
+      count[array[i]]++;     //increase number count in count array.
+   for(int i = 1; i<=max; i++)
+      count[i] += count[i-1];     //find cumulative frequency
+   for(int i = size; i>=1; i--) {
+      output[count[array[i]]] = array[i];
+      count[array[i]] -= 1; //decrease count for same numbers
+   }
+   for(int i = 1; i<=size; i++) {
+      array[i] = output[i]; //store output array to main array
+   }
+}
 
 void kopcenie(int* arr, int n, int i)
 {
@@ -337,4 +362,67 @@ void sort_przez_kopcenie(int* arr, int n)
         // call max heapify on the reduced heap
         kopcenie(arr, i, 0);
     }
+}
+
+void counting_sort(int* tab, int n, int yMin, int yMax) {
+
+    int* counters = new int[yMax - yMin + 1];
+
+    //Poczatkowe wartosci licznikow
+
+    for (int x = 0; x < (yMax - yMin + 1); x++)
+    {
+        counters[x] = 0;
+    }
+
+    /*cout << "\nStworzono tablice licznikow: " << endl;
+    cout << "\t| ";*/
+
+   /*for (int x = 0; x < (yMax - yMin + 1); x++)
+    {
+        cout << x + yMin << ":0 | ";
+    }
+    cout << endl;*/
+
+    for (int x = 0; x < n; x++) {
+        counters[tab[x] - yMin]++;
+    }
+    /*cout << endl << "Zliczone elementy: " << endl;
+    cout << "\t|"; */
+    /*for (int x = 0; x < (yMax - yMin + 1); x++) {
+       cout << x + yMin << ":" << counters[x] << " | ";
+    }
+    cout << endl; */
+
+    //Zapis elementow 
+    int lastIndex = 0; 
+    for (int x = 0; x < (yMax - yMin + 1); x++)
+    {
+        int y; 
+        for (y = lastIndex; y < counters[x] + lastIndex; y++)
+        {
+            tab[y] = x + yMin; 
+        }
+        lastIndex = y; 
+    }
+}
+
+int* findMinAndMax(int* arr, int n)
+{
+    int* minAndMax = new int[2];
+    minAndMax[0] = arr[0];
+    minAndMax[1] = arr[1];
+
+    for (int x = 0; x < n; x++)
+    {
+        if (arr[x] < minAndMax[0])
+        {
+            minAndMax[0] = arr[x];
+        }
+        if (arr[x] > minAndMax[1])
+        {
+            minAndMax[1] = arr[x];
+        }
+    }
+    return minAndMax;
 }
