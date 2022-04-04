@@ -24,7 +24,7 @@ long double policz_srednia(unsigned long long int* wsk, int ilosc_elementow_w_ta
 void zapisanie_pomiarow_instancji(string nazwa_pliku_z_pomiarami, int liczba_instancji, unsigned long long int* wsk_na_czas_pomiaru, int liczba_prob, long double srednia);
 
 // sekcja sortowań
-int* findMinAndMax(int* arr, int n);
+int* find_min_and_max(int* arr, int n);
 void counting_sort(int* tab, int n, int yMin, int yMax);
 void kopcenie(int* arr, int n, int i);
 void sort_przez_kopcenie(int* arr, int n);
@@ -49,14 +49,17 @@ int main()
             int* tab=new int[instancje[i]];
             wczytanie_danych(tab, instancje[i], nazwa_pliku_wejsciowego);
             /*sprawdzenie_tablicy(tab, instancje[i]);*/
-
+            //odnalezienie wartosci minimalnych i maksymalnych
+            int min = find_min_and_max(tab, instancje[i])[0];
+            int max = find_min_and_max(tab, instancje[i])[1];
+            
             // rozpoczecie pomiaru czasu sortowania
             chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
             switch (jakie_sortowanie)
             {
             case 1: // przez zliczanie
-                counting_sort(tab, instancje[i], findMinAndMax(tab, instancje[i])[0], findMinAndMax(tab, instancje[i])[1]);
+                counting_sort(tab, instancje[i], min, max);
                 break;
             
             case 2: // przez kopcenie
@@ -87,7 +90,7 @@ int main()
                     nazwa_pliku_z_posortowanymi_liczbami += "_przez_zliczanie";
                     break;
                 case 2:
-                    nazwa_pliku_z_posortowanymi_liczbami += "_przez_kopcenie";
+                    nazwa_pliku_z_posortowanymi_liczbami += "_przez_kopcowanie";
                     break;
                 default:
                     cout<<"Blednie wybrane sortowanie"<<endl;
@@ -215,7 +218,7 @@ void utworzenie_pliku_z_pomiarami(string nazwa_pliku_z_pomiarami, int liczba_pro
         nazwa_pliku_z_pomiarami += "_przez_zliczanie";
         break;
     case 2:
-        nazwa_pliku_z_pomiarami += "_przez_kopcenie";
+        nazwa_pliku_z_pomiarami += "_przez_kopcowanie";
         break;
     default:
         cout<<"Blednie wybrane sortowanie"<<endl;
@@ -267,7 +270,7 @@ void zapisanie_pomiarow_instancji(string nazwa_pliku_z_pomiarami, int liczba_ins
         nazwa_pliku_z_pomiarami += "_przez_zliczanie";
         break;
     case 2:
-        nazwa_pliku_z_pomiarami += "_przez_kopcenie";
+        nazwa_pliku_z_pomiarami += "_przez_kopcowanie";
         break;
     default:
         cout<<"Blednie wybrane sortowanie"<<endl;
@@ -305,7 +308,9 @@ int getMax(int array[], int size) {
    }
    return max; //the max element from the array
 }
-void countSort(int *array, int size) {
+
+// działa tylko dla liczb dodatnich
+/*void countSort(int *array, int size) {
    int output[size+1];
    int max = getMax(array, size);
    int count[max+1];     //create count array (max+1 number of elements)
@@ -323,6 +328,7 @@ void countSort(int *array, int size) {
       array[i] = output[i]; //store output array to main array
    }
 }
+*/
 
 void kopcenie(int* arr, int n, int i)
 {
@@ -364,12 +370,11 @@ void sort_przez_kopcenie(int* arr, int n)
     }
 }
 
-void counting_sort(int* tab, int n, int yMin, int yMax) {
-
+void counting_sort(int* tab, int n, int yMin, int yMax) 
+{
     int* counters = new int[yMax - yMin + 1];
 
-    //Poczatkowe wartosci licznikow
-
+    // Początkowe wartości liczników
     for (int x = 0; x < (yMax - yMin + 1); x++)
     {
         counters[x] = 0;
@@ -384,7 +389,8 @@ void counting_sort(int* tab, int n, int yMin, int yMax) {
     }
     cout << endl;*/
 
-    for (int x = 0; x < n; x++) {
+    for (int x = 0; x < n; x++) 
+    {
         counters[tab[x] - yMin]++;
     }
     /*cout << endl << "Zliczone elementy: " << endl;
@@ -394,7 +400,7 @@ void counting_sort(int* tab, int n, int yMin, int yMax) {
     }
     cout << endl; */
 
-    //Zapis elementow 
+    // Stworzenie posortowanej tablicy
     int lastIndex = 0; 
     for (int x = 0; x < (yMax - yMin + 1); x++)
     {
@@ -407,7 +413,7 @@ void counting_sort(int* tab, int n, int yMin, int yMax) {
     }
 }
 
-int* findMinAndMax(int* arr, int n)
+int* find_min_and_max(int* arr, int n)
 {
     int* minAndMax = new int[2];
     minAndMax[0] = arr[0];
