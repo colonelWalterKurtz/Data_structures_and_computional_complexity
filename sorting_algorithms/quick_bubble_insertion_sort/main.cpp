@@ -320,11 +320,11 @@ void utworzenie_pliku_z_pomiarami(string nazwa_pliku_z_pomiarami, int liczba_pro
     if(plik.good()==true)
     {
         // utworzenie tabeli
-        plik<<"liczba instancji"<<",";
+        plik<<"liczba instancji"<<";";
         // kolejne
         for (int i = 0; i < liczba_prob; i++)
         {
-            plik<<i+1<<" pomiar,";
+            plik<<i+1<<" pomiar;";
         }
         
         plik<<"srednia"<<endl;
@@ -374,10 +374,10 @@ void zapisanie_pomiarow_instancji(string nazwa_pliku_z_pomiarami, int liczba_ins
     plik.open(nazwa_pliku_z_pomiarami, ios::out|ios::app);
     if(plik.good()==true)
     {
-        plik<<liczba_instancji<<",";
+        plik<<liczba_instancji<<";";
         for (int i = 0; i < liczba_prob; i++)
         {
-            plik<<wsk_na_czas_pomiaru[i]<<",";
+            plik<<wsk_na_czas_pomiaru[i]<<";";
         }
         plik<<srednia<<endl;
     }

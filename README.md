@@ -11,3 +11,4 @@ C++ was chosen as the programming language in which the all presented algorithms
 
 ### compilation
 *$ g++ main.cpp*
+- compilation for the external use: ***>g++ -static-libgcc -static-libstdc++ -static -lpthread -o sortowanie.exe main.cpp***

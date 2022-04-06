@@ -13,14 +13,6 @@ int jakie_sortowanie;
 string nazwa_pliku_wyjciowego;
 string nazwa_pliku_z_czasami;
 
-// zmienne globalne
-string nazwa_pliku_wejsciowego;
-int instancje[17];
-int liczba_pomiarow;
-int jakie_sortowanie;
-string nazwa_pliku_wyjciowego;
-string nazwa_pliku_z_czasami;
-
 // sekcja funkcyjna
 void inicjalizacja(string nazwa_ini);
 void sprawdzenie_inicjalizacji();
@@ -32,8 +24,10 @@ long double policz_srednia(unsigned long long int* wsk, int ilosc_elementow_w_ta
 void zapisanie_pomiarow_instancji(string nazwa_pliku_z_pomiarami, int liczba_instancji, unsigned long long int* wsk_na_czas_pomiaru, int liczba_prob, long double srednia);
 
 // sekcja sortowań
-void sort_przez_zliczanie();
-void sort_przez_kopcenie();
+int* find_min_and_max(int* arr, int n);
+void counting_sort(int* tab, int n, int yMin, int yMax);
+void kopcenie(int* arr, int n, int i);
+void sort_przez_kopcenie(int* arr, int n);
 
 
 int main()
@@ -55,18 +49,21 @@ int main()
             int* tab=new int[instancje[i]];
             wczytanie_danych(tab, instancje[i], nazwa_pliku_wejsciowego);
             /*sprawdzenie_tablicy(tab, instancje[i]);*/
-
+            //odnalezienie wartosci minimalnych i maksymalnych
+            int min = find_min_and_max(tab, instancje[i])[0];
+            int max = find_min_and_max(tab, instancje[i])[1];
+            
             // rozpoczecie pomiaru czasu sortowania
             chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
             switch (jakie_sortowanie)
             {
             case 1: // przez zliczanie
-                quick_sort(tab, 0, instancje[i]);
+                counting_sort(tab, instancje[i], min, max);
                 break;
             
             case 2: // przez kopcenie
-                bubble_sort(tab, instancje[i]);
+                sort_przez_kopcenie(tab, instancje[i]);
                 break;
 
             default:
@@ -93,7 +90,7 @@ int main()
                     nazwa_pliku_z_posortowanymi_liczbami += "_przez_zliczanie";
                     break;
                 case 2:
-                    nazwa_pliku_z_posortowanymi_liczbami += "_przez_kopcenie";
+                    nazwa_pliku_z_posortowanymi_liczbami += "_przez_kopcowanie";
                     break;
                 default:
                     cout<<"Blednie wybrane sortowanie"<<endl;
@@ -221,7 +218,7 @@ void utworzenie_pliku_z_pomiarami(string nazwa_pliku_z_pomiarami, int liczba_pro
         nazwa_pliku_z_pomiarami += "_przez_zliczanie";
         break;
     case 2:
-        nazwa_pliku_z_pomiarami += "_przez_kopcenie";
+        nazwa_pliku_z_pomiarami += "_przez_kopcowanie";
         break;
     default:
         cout<<"Blednie wybrane sortowanie"<<endl;
@@ -236,11 +233,11 @@ void utworzenie_pliku_z_pomiarami(string nazwa_pliku_z_pomiarami, int liczba_pro
     if(plik.good()==true)
     {
         // utworzenie tabeli
-        plik<<"liczba instancji"<<",";
+        plik<<"liczba instancji"<<";";
         // kolejne
         for (int i = 0; i < liczba_prob; i++)
         {
-            plik<<i+1<<" pomiar,";
+            plik<<i+1<<" pomiar;";
         }
         
         plik<<"srednia"<<endl;
@@ -273,7 +270,7 @@ void zapisanie_pomiarow_instancji(string nazwa_pliku_z_pomiarami, int liczba_ins
         nazwa_pliku_z_pomiarami += "_przez_zliczanie";
         break;
     case 2:
-        nazwa_pliku_z_pomiarami += "_przez_kopcenie";
+        nazwa_pliku_z_pomiarami += "_przez_kopcowanie";
         break;
     default:
         cout<<"Blednie wybrane sortowanie"<<endl;
@@ -287,10 +284,10 @@ void zapisanie_pomiarow_instancji(string nazwa_pliku_z_pomiarami, int liczba_ins
     plik.open(nazwa_pliku_z_pomiarami, ios::out|ios::app);
     if(plik.good()==true)
     {
-        plik<<liczba_instancji<<",";
+        plik<<liczba_instancji<<";";
         for (int i = 0; i < liczba_prob; i++)
         {
-            plik<<wsk_na_czas_pomiaru[i]<<",";
+            plik<<wsk_na_czas_pomiaru[i]<<";";
         }
         plik<<srednia<<endl;
     }
@@ -303,12 +300,135 @@ void zapisanie_pomiarow_instancji(string nazwa_pliku_z_pomiarami, int liczba_ins
 }
 
 // sekcja sortowań
-void sort_przez_zliczanie()
-{
-
+int getMax(int array[], int size) {
+   int max = array[1];
+   for(int i = 2; i<=size; i++) {
+      if(array[i] > max)
+         max = array[i];
+   }
+   return max; //the max element from the array
 }
 
-void sort_przez_kopcenie()
-{
+// działa tylko dla liczb dodatnich
+/*void countSort(int *array, int size) {
+   int output[size+1];
+   int max = getMax(array, size);
+   int count[max+1];     //create count array (max+1 number of elements)
+   for(int i = 0; i<=max; i++)
+      count[i] = 0;     //initialize count array to all zero
+   for(int i = 1; i <=size; i++)
+      count[array[i]]++;     //increase number count in count array.
+   for(int i = 1; i<=max; i++)
+      count[i] += count[i-1];     //find cumulative frequency
+   for(int i = size; i>=1; i--) {
+      output[count[array[i]]] = array[i];
+      count[array[i]] -= 1; //decrease count for same numbers
+   }
+   for(int i = 1; i<=size; i++) {
+      array[i] = output[i]; //store output array to main array
+   }
+}
+*/
 
+void kopcenie(int* arr, int n, int i)
+{
+    int largest = i; // Initialize largest as root
+    int l = 2 * i + 1; // left = 2*i + 1
+    int r = 2 * i + 2; // right = 2*i + 2
+ 
+    // If left child is larger than root
+    if (l < n && arr[l] > arr[largest])
+        largest = l;
+ 
+    // If right child is larger than largest so far
+    if (r < n && arr[r] > arr[largest])
+        largest = r;
+ 
+    // If largest is not root
+    if (largest != i) {
+        swap(arr[i], arr[largest]);
+ 
+        // Recursively heapify the affected sub-tree
+        kopcenie(arr, n, largest);
+    }
+}
+ 
+// main function to do heap sort
+void sort_przez_kopcenie(int* arr, int n)
+{
+    // Build heap (rearrange array)
+    for (int i = n / 2 - 1; i >= 0; i--)
+        kopcenie(arr, n, i);
+ 
+    // One by one extract an element from heap
+    for (int i = n - 1; i > 0; i--) {
+        // Move current root to end
+        swap(arr[0], arr[i]);
+ 
+        // call max heapify on the reduced heap
+        kopcenie(arr, i, 0);
+    }
+}
+
+void counting_sort(int* tab, int n, int yMin, int yMax) 
+{
+    int* counters = new int[yMax - yMin + 1];
+
+    // Początkowe wartości liczników
+    for (int x = 0; x < (yMax - yMin + 1); x++)
+    {
+        counters[x] = 0;
+    }
+
+    /*cout << "\nStworzono tablice licznikow: " << endl;
+    cout << "\t| ";*/
+
+   /*for (int x = 0; x < (yMax - yMin + 1); x++)
+    {
+        cout << x + yMin << ":0 | ";
+    }
+    cout << endl;*/
+
+    for (int x = 0; x < n; x++) 
+    {
+        counters[tab[x] - yMin]++;
+    }
+    /*cout << endl << "Zliczone elementy: " << endl;
+    cout << "\t|"; */
+    /*for (int x = 0; x < (yMax - yMin + 1); x++) {
+       cout << x + yMin << ":" << counters[x] << " | ";
+    }
+    cout << endl; */
+
+    // Stworzenie posortowanej tablicy
+    int lastIndex = 0; 
+    for (int x = 0; x < (yMax - yMin + 1); x++)
+    {
+        int y; 
+        for (y = lastIndex; y < counters[x] + lastIndex; y++)
+        {
+            tab[y] = x + yMin; 
+        }
+        lastIndex = y; 
+    }
+}
+
+int* find_min_and_max(int* arr, int n)
+{
+    int* minAndMax = new int[2];
+    minAndMax[0] = arr[0];
+    minAndMax[1] = arr[1];
+
+    for (int x = 0; x < n; x++)
+    {
+        if (arr[x] < minAndMax[0])
+        {
+            minAndMax[0] = arr[x];
+        }
+        if (arr[x] > minAndMax[1])
+        {
+            minAndMax[1] = arr[x];
+        }
+    }
+    return minAndMax;
 }
