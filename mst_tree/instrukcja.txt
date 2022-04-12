@@ -1,0 +1,20 @@
+STRUKTURY DANYCH I ZŁOŻONOŚĆ OBLICZENIOWA - LABORATORIUM - lab 3 - MST drzewa rozpinające
+
+* W pliku inicjalizacja.ini zawarte są kolejno w liniach:
+    1.  nazwa pliku z liczbami (plik wejściowy)
+
+    2.  trzynaście liczb odzielonych od siebie spacjami opisującymi rozmiar macierzy do wczytania z pliku wejściowego
+        - zapis wielkości instancji: instancja1 instancja2 instancja 3 ... instancja13
+
+    3.  nazwa pliku z liczbami będący plikiem referencyjnym, za pomocą którego możliwe będzie sprawdzenie algorytmu Prima
+    
+    4.  nazwa pliku wyjściowego, w którym znajdować się będą czasy wykonania się algorytmu Prima
+        - plik będzie posiadać rozszerzenie .csv
+
+
+* liczby w pliku wejściowym, z danymi muszą być zapisane w fomracie: "liczba1, liczba2, liczba3, ..., liczbaN"
+
+* pomiary czasu wykonane są w mikrosekundach
+
+* w razie niewykonania wszystkich prób, program uruchamiać ponowanie lub przeprowadzić powtórną kompilację
+    - program prawidłowo kompiluje się za pomocą kompilatora g++ wchodzącego w skład pakietu GCC
