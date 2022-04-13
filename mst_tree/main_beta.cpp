@@ -6,7 +6,7 @@
 
 using namespace std;
 
-#define INF 9999999
+//#define INF 9999999
 
 // sekcja funkcyjna
 void inicjalizacja(string nazwa_ini);
@@ -16,8 +16,18 @@ void wczytanie_danych(int* wsk, int ilosc_wczytywanych_liczb, string nazwa_pliku
 void sprawdzenie_tablicy(int* wsk, int ilosc_wczytywanych_liczb);
 void konwersja_z_1D_do_2D(int* wsk, int** tab, int ilosc_liczb);
 void sprawdzenie_2D(int** tab, int ilosc_liczb);
+void zapis_pomiarow(string nazwa_pliku, unsigned long long int* tab_pomiarow, int liczba_pomiarow);
 
 void referencja();
+
+// sekcja zmiennych globalnych
+int rozmiary[13];
+unsigned long long int pomiary_czasow[13];
+int rozmiar_referencji;
+string nazwa_pliku_z_czasami;
+string nazwa_pliku_referyncyjnego;
+string nazwa_pliku_z_liczbami;
+
 
 int minKey(int* key, bool* mstSet, int V){
     // Initialize min value
@@ -130,12 +140,6 @@ void primMST_nopreview(int** graph, int V)
     delete[] key;
     delete[] parent;
 }
-// sekcja zmiennych globalnych
-int rozmiary[13];
-int rozmiar_referencji;
-string nazwa_pliku_z_czasami;
-string nazwa_pliku_referyncyjnego;
-string nazwa_pliku_z_liczbami;
 
 
 // =================================== FUNKCJA MAIN ===================================
@@ -159,7 +163,14 @@ int main(){
         //sprawdzenie_2D(tablica, rozmiary[i]);
 
         cout<<"Drzeewo MST dla rozmiaru: "<<rozmiary[i]<<endl;
+
+        // rozpoczecie pomiaru czasu sortowania
+        chrono::steady_clock::time_point begin = chrono::steady_clock::now();
         primMST_nopreview(tablica, rozmiary[i]);
+        // zakonczenie pomiaru czasu sortowania
+        chrono::steady_clock::time_point end = chrono::steady_clock::now();
+        unsigned long long int time_dif = chrono::duration_cast<chrono::microseconds>(end-begin).count();
+        pomiary_czasow[i]=time_dif;
 
         // usunięcie zalokowanej pamięci
         delete[] wsk;
@@ -168,11 +179,11 @@ int main(){
         }
         delete[] tablica;
     }
-    
+    zapis_pomiarow(nazwa_pliku_z_czasami, pomiary_czasow, 12);
 
     return 0;
 }
-
+// =================================== KONIEC FUNKCJI MAIN ===================================
 
 void inicjalizacja(string nazwa_ini){
     fstream plik;
@@ -294,4 +305,21 @@ void referencja(){
     }
     delete[] tablica;
     delete[] ptr;
+}
+
+void zapis_pomiarow(string nazwa_pliku, unsigned long long int* tab_pomiarow, int liczba_pomiarow){
+    fstream plik;
+    nazwa_pliku+=".csv";
+    plik.open(nazwa_pliku, ios::out|ios::app);
+    if(plik.good() == true){
+        for (int i = 0; i < liczba_pomiarow; i++)
+        {
+            plik<<tab_pomiarow[i]<<';';
+        }
+        plik<<endl;
+    }
+    else{
+        cout<<"Blad przy zapisywaniu pomiarow"<<endl;
+        exit(-1);
+    }
 }
