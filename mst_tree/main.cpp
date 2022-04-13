@@ -6,8 +6,7 @@
 
 using namespace std;
 
-#define INF 9999999
-#define V 5
+//#define INF 9999999
 
 // sekcja funkcyjna
 void inicjalizacja(string nazwa_ini);
@@ -17,10 +16,20 @@ void wczytanie_danych(int* wsk, int ilosc_wczytywanych_liczb, string nazwa_pliku
 void sprawdzenie_tablicy(int* wsk, int ilosc_wczytywanych_liczb);
 void konwersja_z_1D_do_2D(int* wsk, int** tab, int ilosc_liczb);
 void sprawdzenie_2D(int** tab, int ilosc_liczb);
+void zapis_pomiarow(string nazwa_pliku, unsigned long long int* tab_pomiarow, int liczba_pomiarow);
 
 void referencja();
 
-int minKey(int key[], bool mstSet[]){
+// sekcja zmiennych globalnych
+int rozmiary[13];
+unsigned long long int pomiary_czasow[13];
+int rozmiar_referencji;
+string nazwa_pliku_z_czasami;
+string nazwa_pliku_referyncyjnego;
+string nazwa_pliku_z_liczbami;
+
+
+int minKey(int* key, bool* mstSet, int V){
     // Initialize min value
     int min = INT_MAX, min_index;
  
@@ -31,23 +40,21 @@ int minKey(int key[], bool mstSet[]){
     return min_index;
 }
 
-void printMST(int parent[], int graph[V][V])
+void printMST(int* parent, int** graph, int V)
 {
-    cout<<"Edge \tWeight\n";
+    cout<<"Krawedz \tWaga\n";
     for (int i = 1; i < V; i++)
         cout<<parent[i]<<" - "<<i<<" \t"<<graph[i][parent[i]]<<" \n";
 }
 
-void primMST(int graph[V][V])
+void primMST(int** graph, int V)
 {
     // Array to store constructed MST
-    int parent[V];
-     
+    int* parent = new int[V];
     // Key values used to pick minimum weight edge in cut
-    int key[V];
-     
+    int* key = new int[V];
     // To represent set of vertices included in MST
-    bool mstSet[V];
+    bool* mstSet = new bool[V];
  
     // Initialize all keys as INFINITE
     for (int i = 0; i < V; i++)
@@ -63,7 +70,7 @@ void primMST(int graph[V][V])
     {
         // Pick the minimum key vertex from the
         // set of vertices not yet included in MST
-        int u = minKey(key, mstSet);
+        int u = minKey(key, mstSet, V);
  
         // Add the picked vertex to the MST Set
         mstSet[u] = true;
@@ -82,21 +89,66 @@ void primMST(int graph[V][V])
     }
  
     // print the constructed MST
-    printMST(parent, graph);
+    printMST(parent, graph, V);
+    delete[] mstSet;
+    delete[] key;
+    delete[] parent;
 }
-// sekcja zmiennych globalnych
-int rozmiary[13];
-int rozmiar_referencji;
-string nazwa_pliku_z_czasami;
-string nazwa_pliku_referyncyjnego;
-string nazwa_pliku_z_liczbami;
 
+void primMST_nopreview(int** graph, int V)
+{
+    // Array to store constructed MST
+    int* parent = new int[V];
+    // Key values used to pick minimum weight edge in cut
+    int* key = new int[V];
+    // To represent set of vertices included in MST
+    bool* mstSet = new bool[V];
+ 
+    // Initialize all keys as INFINITE
+    for (int i = 0; i < V; i++)
+        key[i] = INT_MAX, mstSet[i] = false;
+ 
+    // Always include first 1st vertex in MST.
+    // Make key 0 so that this vertex is picked as first vertex.
+    key[0] = 0;
+    parent[0] = -1; // First node is always root of MST
+ 
+    // The MST will have V vertices
+    for (int count = 0; count < V - 1; count++)
+    {
+        // Pick the minimum key vertex from the
+        // set of vertices not yet included in MST
+        int u = minKey(key, mstSet, V);
+ 
+        // Add the picked vertex to the MST Set
+        mstSet[u] = true;
+ 
+        // Update key value and parent index of
+        // the adjacent vertices of the picked vertex.
+        // Consider only those vertices which are not
+        // yet included in MST
+        for (int v = 0; v < V; v++)
+ 
+            // graph[u][v] is non zero only for adjacent vertices of m
+            // mstSet[v] is false for vertices not yet included in MST
+            // Update the key only if graph[u][v] is smaller than key[v]
+            if (graph[u][v] && mstSet[v] == false && graph[u][v] < key[v])
+                parent[v] = u, key[v] = graph[u][v];
+    }
+ 
+    delete[] mstSet;
+    delete[] key;
+    delete[] parent;
+}
+
+
+// =================================== FUNKCJA MAIN ===================================
 int main(){
     inicjalizacja("inicjalizacja.ini");
 
     referencja();
-    /*
-    for (int i = 0; i < 1; i++){
+    
+    for (int i = 0; i < 12; i++){
         // Utworzenie dynamicznego wektora oraz tablic
         int* wsk = new int[rozmiary[i]*rozmiary[i]];
         int** tablica = new int*[rozmiary[i]];
@@ -110,7 +162,16 @@ int main(){
         konwersja_z_1D_do_2D(wsk, tablica, rozmiary[i]);
         //sprawdzenie_2D(tablica, rozmiary[i]);
 
-        mst_prime_z_preview(tablica, rozmiary[i]);
+        cout<<"Drzeewo MST dla rozmiaru: "<<rozmiary[i]<<endl;
+
+        // rozpoczecie pomiaru czasu sortowania
+        chrono::steady_clock::time_point begin = chrono::steady_clock::now();
+        primMST_nopreview(tablica, rozmiary[i]);
+        //primMST(tablica,rozmiary[i]);
+        // zakonczenie pomiaru czasu sortowania
+        chrono::steady_clock::time_point end = chrono::steady_clock::now();
+        unsigned long long int time_dif = chrono::duration_cast<chrono::microseconds>(end-begin).count();
+        pomiary_czasow[i]=time_dif;
 
         // usunięcie zalokowanej pamięci
         delete[] wsk;
@@ -119,11 +180,11 @@ int main(){
         }
         delete[] tablica;
     }
-    */
+    zapis_pomiarow(nazwa_pliku_z_czasami, pomiary_czasow, 12);
 
     return 0;
 }
-
+// =================================== KONIEC FUNKCJI MAIN ===================================
 
 void inicjalizacja(string nazwa_ini){
     fstream plik;
@@ -238,20 +299,28 @@ void referencja(){
     }
     konwersja_z_1D_do_2D(ptr, tablica, rozmiar_referencji);
     sprawdzenie_2D(tablica, rozmiar_referencji);
-    int tabela[V][V];
-    for (int i = 0; i < 5; i++)
-    {
-        for (int j = 0; j < 5; j++)
-        {
-            tabela[i][j]=tablica[i][j];
-        }
-        
-    }
     
-    primMST(tabela);
+    primMST(tablica, rozmiar_referencji);
     for(int j=0; j < rozmiar_referencji; j++){
         delete[] tablica[j];
     }
     delete[] tablica;
     delete[] ptr;
+}
+
+void zapis_pomiarow(string nazwa_pliku, unsigned long long int* tab_pomiarow, int liczba_pomiarow){
+    fstream plik;
+    nazwa_pliku+=".csv";
+    plik.open(nazwa_pliku, ios::out|ios::app);
+    if(plik.good() == true){
+        for (int i = 0; i < liczba_pomiarow; i++)
+        {
+            plik<<tab_pomiarow[i]<<';';
+        }
+        plik<<endl;
+    }
+    else{
+        cout<<"Blad przy zapisywaniu pomiarow"<<endl;
+        exit(-1);
+    }
 }
