@@ -18,3 +18,7 @@ STRUKTURY DANYCH I ZŁOŻONOŚĆ OBLICZENIOWA - LABORATORIUM - lab 3 - MST drzew
 
 * w razie niewykonania wszystkich prób, program uruchamiać ponowanie lub przeprowadzić powtórną kompilację
     - program prawidłowo kompiluje się za pomocą kompilatora g++ wchodzącego w skład pakietu GCC
+
+* do wygenerowania pliku z macierzą do wykonania programu można wykorzystać funkcję programu matLAB zapisaną w pliku "MakeGraph.m",
+	należy wywołać ją w command window poleceniem 
+		>>csvwrite('macierzV.txt',MakeGraph(V,max))

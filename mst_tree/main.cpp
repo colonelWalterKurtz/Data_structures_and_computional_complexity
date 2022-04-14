@@ -12,7 +12,8 @@ using namespace std;
 void inicjalizacja(string nazwa_ini);
 void sprawdzenie_inicjalizacji();
 void utworzenie_pliku_z_czasami(string nazwa_pliku);
-void wczytanie_danych(int* wsk, int ilosc_wczytywanych_liczb, string nazwa_pliku_z_danymi);
+void wczytanie_danych(int* wsk, int rozmiar_macierzy, string nazwa_pliku_z_danymi);
+void wczytanie_danych_final(int* wsk, int rozmiar_macierzy, string nazwa_pliku_z_danymi);
 void sprawdzenie_tablicy(int* wsk, int ilosc_wczytywanych_liczb);
 void konwersja_z_1D_do_2D(int* wsk, int** tab, int ilosc_liczb);
 void sprawdzenie_2D(int** tab, int ilosc_liczb);
@@ -42,7 +43,7 @@ int minKey(int* key, bool* mstSet, int V){
 
 void printMST(int* parent, int** graph, int V)
 {
-    cout<<"Krawedz \tWaga\n";
+    cout<<"Edge \tWeight\n";
     for (int i = 1; i < V; i++)
         cout<<parent[i]<<" - "<<i<<" \t"<<graph[i][parent[i]]<<" \n";
 }
@@ -148,7 +149,7 @@ int main(){
 
     referencja();
     
-    for (int i = 0; i < 12; i++){
+    for (int i = 0; i < 13; i++){
         // Utworzenie dynamicznego wektora oraz tablic
         int* wsk = new int[rozmiary[i]*rozmiary[i]];
         int** tablica = new int*[rozmiary[i]];
@@ -156,13 +157,19 @@ int main(){
         {
             tablica[j] = new int[rozmiary[i]];
         }
-
-        wczytanie_danych(wsk, rozmiary[i]*rozmiary[i], nazwa_pliku_z_liczbami);
+        // wybranie odpowiedniego wczytania danych
+        if (i == 12){
+            wczytanie_danych_final(wsk, rozmiary[i], nazwa_pliku_z_liczbami);
+        }
+        else{
+            wczytanie_danych(wsk, rozmiary[i], nazwa_pliku_z_liczbami);
+        }
+        
         //sprawdzenie_tablicy(wsk, rozmiary[i]*rozmiary[i]);
         konwersja_z_1D_do_2D(wsk, tablica, rozmiary[i]);
         //sprawdzenie_2D(tablica, rozmiary[i]);
 
-        cout<<"Drzeewo MST dla rozmiaru: "<<rozmiary[i]<<endl;
+        cout<<"Drzewo MST dla rozmiaru: "<<rozmiary[i]<<endl;
 
         // rozpoczecie pomiaru czasu sortowania
         chrono::steady_clock::time_point begin = chrono::steady_clock::now();
@@ -236,18 +243,25 @@ void utworzenie_pliku_z_czasami(string nazwa_pliku){
     plik.close();
 }
 
-void wczytanie_danych(int* wsk, int ilosc_wczytywanych_liczb, string nazwa_pliku_z_danymi){
+void wczytanie_danych(int* wsk, int rozmiar_macierzy, string nazwa_pliku_z_danymi){
     ifstream plik;
     plik.open(nazwa_pliku_z_danymi, ios::in);
+    int miejsce_w_tablicy=0;
     if(plik.good() == true)
     {
-        for(int i=0; i<ilosc_wczytywanych_liczb; i++)
+        for(int i=0; i<rozmiar_macierzy; i++)
         {
-            string bufor;
-            int konwersja;
-            getline(plik, bufor, ',');
-            konwersja=stoi(bufor);
-            wsk[i]=konwersja; // konwersja string do int
+            for (int j = 0; j < rozmiar_macierzy; j++)
+            {
+                string bufor;
+                int konwersja;
+                getline(plik, bufor, ',');
+                konwersja=stoi(bufor);
+                wsk[miejsce_w_tablicy]=konwersja; // konwersja string do int   
+                ++miejsce_w_tablicy;
+            }
+            string skip;
+            getline(plik, skip);
         }
     }
     else
@@ -257,6 +271,45 @@ void wczytanie_danych(int* wsk, int ilosc_wczytywanych_liczb, string nazwa_pliku
     }
     plik.close();
 }
+
+void wczytanie_danych_final(int* wsk, int rozmiar_macierzy, string nazwa_pliku_z_danymi){
+    ifstream plik;
+    plik.open(nazwa_pliku_z_danymi, ios::in);
+    int miejsce_w_tablicy=0;
+    if(plik.good() == true)
+    {
+        for(int i=0; i<rozmiar_macierzy; i++)
+        {
+            for (int j = 0; j < rozmiar_macierzy; j++)
+            {
+                string bufor;
+                int konwersja;
+                if (j == rozmiar_macierzy-1)
+                {
+                    getline(plik,bufor,'\n');
+                    konwersja=stoi(bufor);
+                    wsk[miejsce_w_tablicy]=konwersja;   
+                }
+                else
+                {
+                    getline(plik, bufor, ',');
+                    konwersja=stoi(bufor);
+                    wsk[miejsce_w_tablicy]=konwersja; // konwersja string do int   
+                }
+                ++miejsce_w_tablicy;
+            }
+        }
+    }
+    else
+    {
+        cout<<"Blad przy wczytywaniu pliku"<<endl;
+        exit(-1);
+    }
+    plik.close();    
+}
+
+
+
 void sprawdzenie_tablicy(int* wsk, int ilosc_wczytywanych_liczb){
     for (int i = 0; i < ilosc_wczytywanych_liczb; i++)
     {
@@ -290,8 +343,8 @@ void sprawdzenie_2D(int** tab, int ilosc_liczb){
 
 void referencja(){
     int* ptr = new int[rozmiar_referencji*rozmiar_referencji];
-    wczytanie_danych(ptr, rozmiar_referencji*rozmiar_referencji, nazwa_pliku_referyncyjnego);
-    //sprawdzenie_tablicy(ptr, rozmiar_referencji*rozmiar_referencji);
+    wczytanie_danych_final(ptr, rozmiar_referencji, nazwa_pliku_referyncyjnego);
+    sprawdzenie_tablicy(ptr, rozmiar_referencji*rozmiar_referencji);
     int** tablica = new int*[rozmiar_referencji];
     for (int j = 0; j < rozmiar_referencji; j++)
     {
