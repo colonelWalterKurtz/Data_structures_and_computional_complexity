@@ -17,13 +17,12 @@ void wczytanie_danych_final(int* wsk, int rozmiar_macierzy, string nazwa_pliku_z
 void sprawdzenie_tablicy(int* wsk, int ilosc_wczytywanych_liczb);
 void konwersja_z_1D_do_2D(int* wsk, int** tab, int ilosc_liczb);
 void sprawdzenie_2D(int** tab, int ilosc_liczb);
-void zapis_pomiarow(string nazwa_pliku, unsigned long long int* tab_pomiarow, int liczba_pomiarow);
-
+void zapis_pomiarow(string nazwa_pliku, unsigned long long int* tab_pomiarow, int liczba_pomiarow, int jaki_rozmiar);
 void referencja();
 
 // sekcja zmiennych globalnych
 int rozmiary[13];
-unsigned long long int pomiary_czasow[13];
+int liczba_pomiarow;
 int rozmiar_referencji;
 string nazwa_pliku_z_czasami;
 string nazwa_pliku_referyncyjnego;
@@ -146,48 +145,51 @@ void primMST_nopreview(int** graph, int V)
 // =================================== FUNKCJA MAIN ===================================
 int main(){
     inicjalizacja("inicjalizacja.ini");
-
+    cout<<"Macierz referencyjna:"<<endl;
     referencja();
-    
+    cout<<"\nRozpoczecie pomiarow czasow dla macierzy o wprowadzonych rozmiarach\n"<<endl;
     for (int i = 0; i < 13; i++){
-        // Utworzenie dynamicznego wektora oraz tablic
-        int* wsk = new int[rozmiary[i]*rozmiary[i]];
-        int** tablica = new int*[rozmiary[i]];
-        for (int j = 0; j < rozmiary[i]; j++)
-        {
-            tablica[j] = new int[rozmiary[i]];
-        }
-        // wybranie odpowiedniego wczytania danych
-        if (i == 12){
-            wczytanie_danych_final(wsk, rozmiary[i], nazwa_pliku_z_liczbami);
-        }
-        else{
-            wczytanie_danych(wsk, rozmiary[i], nazwa_pliku_z_liczbami);
-        }
-        
-        //sprawdzenie_tablicy(wsk, rozmiary[i]*rozmiary[i]);
-        konwersja_z_1D_do_2D(wsk, tablica, rozmiary[i]);
-        //sprawdzenie_2D(tablica, rozmiary[i]);
-
+        unsigned long long int* pomiary_czasow = new unsigned long long int[liczba_pomiarow];
         cout<<"Drzewo MST dla rozmiaru: "<<rozmiary[i]<<endl;
+        for (int k = 0; k < liczba_pomiarow; k++){
+            // Utworzenie dynamicznego wektora oraz tablic
+            int* wsk = new int[rozmiary[i]*rozmiary[i]];
+            int** tablica = new int*[rozmiary[i]];
+            for (int j = 0; j < rozmiary[i]; j++)
+            {
+                tablica[j] = new int[rozmiary[i]];
+            }
+            // wybranie odpowiedniego wczytania danych
+            if (i == 12){
+                wczytanie_danych_final(wsk, rozmiary[i], nazwa_pliku_z_liczbami);
+            }
+            else{
+                wczytanie_danych(wsk, rozmiary[i], nazwa_pliku_z_liczbami);
+            }
+            
+            //sprawdzenie_tablicy(wsk, rozmiary[i]*rozmiary[i]);
+            konwersja_z_1D_do_2D(wsk, tablica, rozmiary[i]);
+            //sprawdzenie_2D(tablica, rozmiary[i]);
 
-        // rozpoczecie pomiaru czasu sortowania
-        chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-        primMST_nopreview(tablica, rozmiary[i]);
-        //primMST(tablica,rozmiary[i]);
-        // zakonczenie pomiaru czasu sortowania
-        chrono::steady_clock::time_point end = chrono::steady_clock::now();
-        unsigned long long int time_dif = chrono::duration_cast<chrono::microseconds>(end-begin).count();
-        pomiary_czasow[i]=time_dif;
+            // rozpoczecie pomiaru czasu sortowania
+            chrono::steady_clock::time_point begin = chrono::steady_clock::now();
+            primMST_nopreview(tablica, rozmiary[i]);
+            //primMST(tablica,rozmiary[i]);
+            // zakonczenie pomiaru czasu sortowania
+            chrono::steady_clock::time_point end = chrono::steady_clock::now();
+            unsigned long long int time_dif = chrono::duration_cast<chrono::microseconds>(end-begin).count();
+            pomiary_czasow[k]=time_dif;
 
-        // usunięcie zalokowanej pamięci
-        delete[] wsk;
-        for(int j=0; j < rozmiary[i]; j++){
-            delete[] tablica[j];
+            // usunięcie zalokowanej pamięci
+            delete[] wsk;
+            for(int j=0; j < rozmiary[i]; j++){
+                delete[] tablica[j];
+            }
+            delete[] tablica;
         }
-        delete[] tablica;
+        zapis_pomiarow(nazwa_pliku_z_czasami, pomiary_czasow, liczba_pomiarow, i);
+        delete[] pomiary_czasow;
     }
-    zapis_pomiarow(nazwa_pliku_z_czasami, pomiary_czasow, 12);
 
     return 0;
 }
@@ -202,6 +204,7 @@ void inicjalizacja(string nazwa_ini){
         {
             plik>>rozmiary[i];
         }
+        plik>>liczba_pomiarow;
         plik>>nazwa_pliku_referyncyjnego;
         plik>>rozmiar_referencji;
         plik>>nazwa_pliku_z_czasami;
@@ -233,12 +236,12 @@ void utworzenie_pliku_z_czasami(string nazwa_pliku){
     ofstream plik;
     plik.open(nazwa_pliku);
     if(plik.good() == true){
-        plik<<"Rozmiary macierzy;";
-        for(int i; i<13; i++){
-            plik<<rozmiary[i]<<';';
+        plik<<"Rozmiary macierzy";
+        for(int i; i<liczba_pomiarow; i++){
+            plik<<"; pomiar nr "<<i+1;
         }
         // zdefiniowanie drugiego wiersza
-        plik<<endl<<"czas pomiaru [us];";
+        plik<<"; srednia czasow"<<endl;
     }
     plik.close();
 }
@@ -344,7 +347,7 @@ void sprawdzenie_2D(int** tab, int ilosc_liczb){
 void referencja(){
     int* ptr = new int[rozmiar_referencji*rozmiar_referencji];
     wczytanie_danych_final(ptr, rozmiar_referencji, nazwa_pliku_referyncyjnego);
-    sprawdzenie_tablicy(ptr, rozmiar_referencji*rozmiar_referencji);
+    //sprawdzenie_tablicy(ptr, rozmiar_referencji*rozmiar_referencji);
     int** tablica = new int*[rozmiar_referencji];
     for (int j = 0; j < rozmiar_referencji; j++)
     {
@@ -361,16 +364,20 @@ void referencja(){
     delete[] ptr;
 }
 
-void zapis_pomiarow(string nazwa_pliku, unsigned long long int* tab_pomiarow, int liczba_pomiarow){
+void zapis_pomiarow(string nazwa_pliku, unsigned long long int* tab_pomiarow, int liczba_pomiarow, int jaki_rozmiar){
     fstream plik;
     nazwa_pliku+=".csv";
     plik.open(nazwa_pliku, ios::out|ios::app);
+    long double srednia=0;
     if(plik.good() == true){
-        for (int i = 0; i < liczba_pomiarow; i++)
+        plik<<rozmiary[jaki_rozmiar];
+        for (int j = 0; j < liczba_pomiarow; j++)
         {
-            plik<<tab_pomiarow[i]<<';';
+            plik<<';'<<tab_pomiarow[j];
+            srednia+=tab_pomiarow[j];
         }
-        plik<<endl;
+        plik<<';'<<srednia/liczba_pomiarow<<endl;
+        //plik<<srednia<<endl;
     }
     else{
         cout<<"Blad przy zapisywaniu pomiarow"<<endl;
