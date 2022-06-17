@@ -1,14 +1,53 @@
 # Data structures and computional complexity
-## Insertion Sort, Merge Sort, Bubble Sort and Quick Sort
-C++ was chosen as the programming language in which the all presented algorithms are written.File 'liczby.txt' contains 1M random integer generated numbers. Program 'sorting_algorithms':
-1.  gets first 10, 50, 100, 500, 1k, 2k, 5k, 10k, 20k, 50k, 100k, 200k, 300k, 500k, 700k, 900k and eventually 1M first numbers
-2. performs the sort
-3. writes the execution time to a file
-    1. each time sprogram is executed, there are taken at least 10 sort attempts of each kind
-    2. execution time is an avereage or a median of those attempts
-    3. if a result significantly different from the others was found during the test, it is ignored
-    4. there is provided an option to save sorted data, to a comparison
 
-### compilation
-*$ g++ main.cpp*
-- compilation for the external use: ***>g++ -static-libgcc -static-libstdc++ -static -lpthread -o sortowanie.exe main.cpp***
+This repository was created for the college course needs. It features research on the time complexity of algorithms used in Computer Science.
+
+C++ was chosen as the programming language, in which all presented algorithms were implement.
+
+Compiled executible files are controlled by file with .ini extansion.
+
+## Reasearch method
+
+1. Compiled programs collects data from files.
+1. The algorithm that is under analysis is being performed.
+    - From each executed instance, the execution time is measured.
+1. Measurements are saved to the csv extansion file.
+
+## Time complexity of sorting algorithms
+
+### Discussed Algorithms
+| Algorithms [name] | Predicted time complexity [O] |
+|:-----------------:|:-------------------:|
+|    Bubble sort    |        $n^2$        |
+|   Insertion sort  |        $n^2$        |
+|     Quick sort    |       $n*logn$      |
+|     Heap sort     |       $n*logn$      |
+|   Counting sort   |        $n+k$        |
+
+In the notebook Sorting Algorithms you will find measurements and diagrams of the written implementations of the algorithms.
+
+![Bubble, Insertion, Quick sorts graph](/images/quick_bubble_insert.png)
+![Count, Heap sorts graph](/images/count_heap.png)
+
+[shortcut to ipynb notebook](https://github.com/colonelWalterKurtz/Data_structures_and_computional_complexity/tree/master/notebooks/sorting_algorithms.ipynb)
+
+[shortcut to folder with implementations of sorting algorithms](https://github.com/colonelWalterKurtz/Data_structures_and_computional_complexity/tree/master/sorting_algorithms)
+
+## Minimum spanning tree (MST)
+
+As in the previous ones, program *mst* purpose is to measure the execution time of the algorithm. This time there is built a minimum spanning tree, based on Prim's algorithm. Values of edges are taken from file *macierz.txt* whose content is symmetric matrix created by matlab script *MakeGraph.m*.
+
+## Dijkstra shortest path (heap)
+
+## AVL and BST trees
+
+
+## Compilation
+
+All writen implementations of algorithms compile successfully by ***GCC*** compiler.
+
+Example commands:
+
+- *$ g++ main.cpp*
+- compilation for the external use:
+  - ***>g++ -static-libgcc -static-libstdc++ -static -lpthread -o sortowanie.exe main.cpp***
