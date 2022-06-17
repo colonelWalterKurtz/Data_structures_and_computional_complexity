@@ -1,0 +1,25 @@
+STRUKTURY DANYCH I ZŁOŻONOŚĆ OBLICZENIOWA - LABORATORIUM - algorytm Dijkstry
+
+* W pliku inicjalizacja.ini zawarte są kolejno w liniach:
+    1. Nazwa pliku z macierzą kwadratową, która ma zostać wczytana do programu
+
+    2. Wymienione liczności instancji
+
+    3. Liczba prób pomiaru czasu
+
+    4. Nazwa pliku referencyjnego, który będzie posiadać macierz kwadratową, o znanym rozwiązaniu, aby sprawdzić poprawność działania programu
+
+    5. Liczebość macierzy referencyjnej
+
+    6. Nazwa pliku, który będzie zawierał pomiary czasu wykonania się programu
+        - pomiary macierzy będą posiadać dopisek nazwa_macierzy_kwadratowej.txt
+
+* liczby w pliku wejściowym oraz referencyjnym, muszą być zapisane w formacie: "x11, x21, ..., x1n
+										x21, x22, ..., x2n
+										xi1, xi2, ..., xin"
+
+* pomiary czasu wykonane są w mikrosekundach
+
+
+* w razie niewykonania wszystkich prób, program uruchamiać ponowanie lub przeprowadzić powtórną kompilację
+    - program prawidłowo kompiluje się za pomocą kompilatora g++ wchodzącego w skład pakietu GCC

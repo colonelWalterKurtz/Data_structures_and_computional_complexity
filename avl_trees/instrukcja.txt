@@ -1,0 +1,20 @@
+STRUKTURY DANYCH I ZŁOŻONOŚĆ OBLICZENIOWA - LABORATORIUM - DRZEWA
+
+* W pliku inicjalizacja.ini zawarte są kolejno w liniach:
+    1. Nazwa pliku z unikatowymi liczbami (słowami), które mają zostać wczytane do programu
+
+    2. Wymienione liczności instancji
+
+    3. Liczba prób pomiaru czasu
+
+    4. Nazwa pliku, który będzie zawierał pomiary czasu wykonania się programu
+        - zostaną utworzone dwa pliki w formacie csv
+            + wprowadzonaNazwaPliku_avl_tree.csv będzie zawierać czasy budowania drzewa AVL, dla wskazanych instancji
+            + wprowadzonaNazwaPliku_avl_tree_del.csv będzie zawierać czasy usuwania 20% utworzonego drzewa, dla wskazanych instancji
+
+* liczby w pliku wejściowym oraz referencyjnym, muszą być zapisane w formacie: "x11, x21, ..., x1n"
+
+* pomiary czasu wykonane są w mikrosekundach
+
+* w razie niewykonania wszystkich prób, program należy uruchomić ponowanie lub przeprowadzić powtórną kompilację
+    - program prawidłowo kompiluje się za pomocą kompilatora g++ wchodzącego w skład pakietu GCC

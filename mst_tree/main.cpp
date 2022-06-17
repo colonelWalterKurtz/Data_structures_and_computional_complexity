@@ -6,8 +6,6 @@
 
 using namespace std;
 
-//#define INF 9999999
-
 // sekcja funkcyjna
 void inicjalizacja(string nazwa_ini);
 void sprawdzenie_inicjalizacji();
@@ -30,7 +28,6 @@ string nazwa_pliku_z_liczbami;
 
 
 int minKey(int* key, bool* mstSet, int V){
-    // Initialize min value
     int min = INT_MAX, min_index;
  
     for (int v = 0; v < V; v++)
@@ -40,55 +37,28 @@ int minKey(int* key, bool* mstSet, int V){
     return min_index;
 }
 
-void printMST(int* parent, int** graph, int V)
-{
+void printMST(int* parent, int** graph, int V){
     cout<<"Edge \tWeight\n";
     for (int i = 1; i < V; i++)
         cout<<parent[i]<<" - "<<i<<" \t"<<graph[i][parent[i]]<<" \n";
 }
 
-void primMST(int** graph, int V)
-{
-    // Array to store constructed MST
+void primMST(int** graph, int V){
     int* parent = new int[V];
-    // Key values used to pick minimum weight edge in cut
     int* key = new int[V];
-    // To represent set of vertices included in MST
     bool* mstSet = new bool[V];
- 
-    // Initialize all keys as INFINITE
     for (int i = 0; i < V; i++)
         key[i] = INT_MAX, mstSet[i] = false;
- 
-    // Always include first 1st vertex in MST.
-    // Make key 0 so that this vertex is picked as first vertex.
     key[0] = 0;
-    parent[0] = -1; // First node is always root of MST
- 
-    // The MST will have V vertices
+    parent[0] = -1; 
     for (int count = 0; count < V - 1; count++)
     {
-        // Pick the minimum key vertex from the
-        // set of vertices not yet included in MST
         int u = minKey(key, mstSet, V);
- 
-        // Add the picked vertex to the MST Set
         mstSet[u] = true;
- 
-        // Update key value and parent index of
-        // the adjacent vertices of the picked vertex.
-        // Consider only those vertices which are not
-        // yet included in MST
         for (int v = 0; v < V; v++)
- 
-            // graph[u][v] is non zero only for adjacent vertices of m
-            // mstSet[v] is false for vertices not yet included in MST
-            // Update the key only if graph[u][v] is smaller than key[v]
             if (graph[u][v] && mstSet[v] == false && graph[u][v] < key[v])
                 parent[v] = u, key[v] = graph[u][v];
     }
- 
-    // print the constructed MST
     printMST(parent, graph, V);
     delete[] mstSet;
     delete[] key;
@@ -97,41 +67,19 @@ void primMST(int** graph, int V)
 
 void primMST_nopreview(int** graph, int V)
 {
-    // Array to store constructed MST
     int* parent = new int[V];
-    // Key values used to pick minimum weight edge in cut
     int* key = new int[V];
-    // To represent set of vertices included in MST
     bool* mstSet = new bool[V];
- 
-    // Initialize all keys as INFINITE
     for (int i = 0; i < V; i++)
         key[i] = INT_MAX, mstSet[i] = false;
- 
-    // Always include first 1st vertex in MST.
-    // Make key 0 so that this vertex is picked as first vertex.
     key[0] = 0;
-    parent[0] = -1; // First node is always root of MST
- 
-    // The MST will have V vertices
+    parent[0] = -1; 
+
     for (int count = 0; count < V - 1; count++)
     {
-        // Pick the minimum key vertex from the
-        // set of vertices not yet included in MST
         int u = minKey(key, mstSet, V);
- 
-        // Add the picked vertex to the MST Set
         mstSet[u] = true;
- 
-        // Update key value and parent index of
-        // the adjacent vertices of the picked vertex.
-        // Consider only those vertices which are not
-        // yet included in MST
         for (int v = 0; v < V; v++)
- 
-            // graph[u][v] is non zero only for adjacent vertices of m
-            // mstSet[v] is false for vertices not yet included in MST
-            // Update the key only if graph[u][v] is smaller than key[v]
             if (graph[u][v] && mstSet[v] == false && graph[u][v] < key[v])
                 parent[v] = u, key[v] = graph[u][v];
     }
@@ -167,14 +115,11 @@ int main(){
                 wczytanie_danych(wsk, rozmiary[i], nazwa_pliku_z_liczbami);
             }
             
-            //sprawdzenie_tablicy(wsk, rozmiary[i]*rozmiary[i]);
             konwersja_z_1D_do_2D(wsk, tablica, rozmiary[i]);
-            //sprawdzenie_2D(tablica, rozmiary[i]);
 
             // rozpoczecie pomiaru czasu sortowania
             chrono::steady_clock::time_point begin = chrono::steady_clock::now();
             primMST_nopreview(tablica, rozmiary[i]);
-            //primMST(tablica,rozmiary[i]);
             // zakonczenie pomiaru czasu sortowania
             chrono::steady_clock::time_point end = chrono::steady_clock::now();
             unsigned long long int time_dif = chrono::duration_cast<chrono::microseconds>(end-begin).count();
@@ -347,7 +292,6 @@ void sprawdzenie_2D(int** tab, int ilosc_liczb){
 void referencja(){
     int* ptr = new int[rozmiar_referencji*rozmiar_referencji];
     wczytanie_danych_final(ptr, rozmiar_referencji, nazwa_pliku_referyncyjnego);
-    //sprawdzenie_tablicy(ptr, rozmiar_referencji*rozmiar_referencji);
     int** tablica = new int*[rozmiar_referencji];
     for (int j = 0; j < rozmiar_referencji; j++)
     {
@@ -377,7 +321,6 @@ void zapis_pomiarow(string nazwa_pliku, unsigned long long int* tab_pomiarow, in
             srednia+=tab_pomiarow[j];
         }
         plik<<';'<<srednia/liczba_pomiarow<<endl;
-        //plik<<srednia<<endl;
     }
     else{
         cout<<"Blad przy zapisywaniu pomiarow"<<endl;
