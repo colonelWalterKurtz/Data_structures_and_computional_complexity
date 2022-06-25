@@ -37,9 +37,16 @@ In the notebook Sorting Algorithms you will find measurements and diagrams of th
 
 As in the previous ones, program *mst* purpose is to measure the execution time of the algorithm. This time there is built a minimum spanning tree, based on Prim's algorithm. Values of edges are taken from file *macierz.txt* whose content is symmetric matrix created by matlab script *MakeGraph.m*.
 
+The complexity of the Prim's algorithm depends on the implementation of the queue. However, inside the algorithm we go through all $n$ elements of the queue and update $n$ neighbors each time. This means that the algorithm itself has a complexity of $n^2$.
+
 ## Dijkstra shortest path (heap)
 
-## AVL and BST trees
+Dijkstra's algorithm finds the shortest paths from a certain vertex to all the paths reached from it. It is an example of a greedy algorithm. The weights of the graph must be non-negative.
+The implementation code of Dijkstra's algorithm in this case is array-based. It is not optimal because the search for the minimum value in the loop is linear $O(n)$ by which the algorithm eventually achieves a quadratic complexity of $O(n^2)$.
+
+## Building AVL tree
+
+An AVL tree, also called an admissible tree, is a balanced binary search tree (BST) in which the heights of the left and right subtrees of each node differ by at most one. AVL trees are often compared to red-black trees because they allow the same operations (addition, deletion, and element search) to be performed with equal pessimistic time complexity $O(log n)$. Building this type of tree will therefore be done with time complexity $O(nlogn)$.
 
 
 ## Compilation
